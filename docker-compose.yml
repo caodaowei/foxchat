@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - foxchat-network
+
+  backend:
+    build: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://foxchat:${DB_PASSWORD}@postgres:5432/foxchat
+      - FEISHU_WEBHOOK_URL=${FEISHU_WEBHOOK_URL}
+    depends_on:
+      - postgres
+    networks:
+      - foxchat-network
+
+  postgres:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=foxchat
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=foxchat
+    ports:
+      - "5432:5432"
+    networks:
+      - foxchat-network
+
+volumes:
+  postgres_data:
+
+networks:
+  foxchat-network:
+    driver: bridge
