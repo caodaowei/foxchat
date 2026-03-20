@@ -6,13 +6,14 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
       - PORT=3000
       - DB_PATH=./data/foxchat.db
-      - JWT_SECRET=foxchat-secret-key-change-in-production
-      - CORS_ORIGIN=http://localhost:5173
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
     volumes:
-      - ./backend/data:/app/data
+      - ./data:/app/data
+    restart: unless-stopped
     command: sh -c "npm run db:migrate && npm start"
 
   frontend:
@@ -20,6 +21,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - VITE_API_URL=http://localhost:3000/api
+      - VITE_API_URL=/api
     depends_on:
       - backend
+    restart: unless-stopped

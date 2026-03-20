@@ -3,20 +3,18 @@
   "version": "1.0.0",
   "description": "狐语 - 团队沟通协作平台",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "cd frontend && npm run dev",
-    "dev:backend": "cd backend && npm run dev",
+    "dev": "docker-compose up --build",
+    "dev:local": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm install && npm run dev",
+    "dev:backend": "cd backend && npm install && npm run dev",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && npm run build",
-    "start": "cd backend && npm start",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down"
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install",
+    "start": "docker-compose -f docker-compose.prod.yml up -d",
+    "stop": "docker-compose down",
+    "db:migrate": "cd backend && npm run db:migrate",
+    "db:seed": "cd backend && npm run db:seed"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
