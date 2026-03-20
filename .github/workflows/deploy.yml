@@ -1,0 +1,33 @@
+name: Deploy to AITest01
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.AITEST01_SSH_KEY }}
+        
+    - name: Add host to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.AITEST01_HOST }} >> ~/.ssh/known_hosts
+        
+    - name: Deploy to AITest01
+      run: |
+        ssh ${{ secrets.AITEST01_USER }}@${{ secrets.AITEST01_HOST }} << 'EOF'
+          cd /home/azureuser/src/foxchat
+          git pull origin master
+          docker-compose down
+          docker-compose up -d --build
+          docker system prune -f
+        EOF
