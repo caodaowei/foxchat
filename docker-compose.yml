@@ -3,23 +3,28 @@ version: '3.8'
 services:
   backend:
     build: ./backend
+    container_name: foxchat-backend
     ports:
-      - "3000:3000"
+      - "7001:7001"
     environment:
-      - NODE_ENV=development
-      - PORT=3000
-      - DB_PATH=./data/foxchat.db
-      - JWT_SECRET=foxchat-secret-key-change-in-production
-      - CORS_ORIGIN=http://localhost:5173
-    volumes:
-      - ./backend/data:/app/data
-    command: sh -c "npm run db:migrate && npm start"
+      - NODE_ENV=production
+      - PORT=7001
+      - HOST=0.0.0.0
+      - DATABASE_URL=postgresql://foxchat:foxchat123@10.2.0.4:7801/foxchat
+      - JWT_SECRET=foxchat-production-secret-key-min-32-characters
+      - JWT_EXPIRES_IN=7d
+      - CORS_ORIGIN=http://localhost:7002
+    command: >
+      sh -c "npm run db:migrate && npm run db:seed && npm start"
+    restart: unless-stopped
 
   frontend:
     build: ./frontend
+    container_name: foxchat-frontend
     ports:
-      - "80:80"
+      - "7002:80"
     environment:
-      - VITE_API_URL=http://localhost:3000/api
+      - VITE_API_URL=http://localhost:7001/api
     depends_on:
       - backend
+    restart: unless-stopped
