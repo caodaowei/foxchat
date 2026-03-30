@@ -18,12 +18,18 @@ const Users = () => {
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    username: string
+    email: string
+    password: string
+    display_name: string
+    role: 'admin' | 'manager' | 'member'
+  }>({
     username: '',
     email: '',
     password: '',
     display_name: '',
-    role: 'member' as const,
+    role: 'member',
   })
 
   const token = getToken() || ''
@@ -93,9 +99,9 @@ const Users = () => {
 
   const getRoleBadge = (role: string) => {
     const colors: Record<string, string> = {
-      admin: 'bg-red-100 text-red-800',
-      manager: 'bg-yellow-100 text-yellow-800',
-      member: 'bg-green-100 text-green-800',
+      admin: 'bg-red-500/20 text-red-400 border-red-500/30',
+      manager: 'bg-accent-orange/20 text-accent-orange border-accent-orange/30',
+      member: 'bg-accent-green/20 text-accent-green border-accent-green/30',
     }
     const labels: Record<string, string> = {
       admin: '管理员',
@@ -103,7 +109,7 @@ const Users = () => {
       member: '成员',
     }
     return (
-      <span className={`px-2 py-1 text-xs font-medium rounded-full ${colors[role]}`}>
+      <span className={`px-2 py-1 text-xs font-medium rounded-full border ${colors[role]}`}>
         {labels[role]}
       </span>
     )
@@ -111,9 +117,9 @@ const Users = () => {
 
   const getStatusBadge = (status: string) => {
     const colors: Record<string, string> = {
-      active: 'bg-green-100 text-green-800',
-      inactive: 'bg-gray-100 text-gray-800',
-      suspended: 'bg-red-100 text-red-800',
+      active: 'bg-accent-green/20 text-accent-green',
+      inactive: 'bg-dark-600 text-dark-400',
+      suspended: 'bg-red-500/20 text-red-400',
     }
     const labels: Record<string, string> = {
       active: '活跃',
@@ -130,7 +136,7 @@ const Users = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-cyan"></div>
       </div>
     )
   }
@@ -138,55 +144,55 @@ const Users = () => {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">用户管理</h1>
+        <h1 className="text-2xl font-bold text-white">用户管理</h1>
         <button
           onClick={handleAdd}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+          className="px-4 py-2 bg-gradient-to-r from-accent-cyan to-accent-blue text-white rounded-lg hover:opacity-90 transition-all flex items-center gap-2"
         >
-          + 新建用户
+          <span>+</span> 新建用户
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="bg-dark-700/50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">用户</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">角色</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">状态</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">创建时间</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">操作</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-dark-400 uppercase">用户</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-dark-400 uppercase">角色</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-dark-400 uppercase">状态</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-dark-400 uppercase">创建时间</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-dark-400 uppercase">操作</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-dark-600/30">
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
+              <tr key={user.id} className="hover:bg-dark-700/30 transition-colors">
                 <td className="px-6 py-4">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-bold">
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-accent-cyan to-accent-blue flex items-center justify-center text-white font-bold">
                       {user.display_name?.[0] || user.username[0].toUpperCase()}
                     </div>
                     <div className="ml-3">
-                      <div className="font-medium text-gray-900">{user.display_name || user.username}</div>
-                      <div className="text-sm text-gray-500">{user.email}</div>
+                      <div className="font-medium text-white">{user.display_name || user.username}</div>
+                      <div className="text-sm text-dark-400">{user.email}</div>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
                 <td className="px-6 py-4">{getStatusBadge(user.status)}</td>
-                <td className="px-6 py-4 text-gray-500">
+                <td className="px-6 py-4 text-dark-400">
                   {new Date(user.created_at).toLocaleDateString('zh-CN')}
                 </td>
                 <td className="px-6 py-4 text-right space-x-2">
                   <button
                     onClick={() => handleEdit(user)}
-                    className="text-primary-600 hover:text-primary-800"
+                    className="text-accent-cyan hover:text-accent-blue transition-colors"
                   >
                     编辑
                   </button>
                   <button
                     onClick={() => handleDelete(user.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-red-400 hover:text-red-300 transition-colors"
                   >
                     删除
                   </button>
@@ -197,7 +203,7 @@ const Users = () => {
         </table>
 
         {users.length === 0 && (
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-dark-400">
             暂无用户数据
           </div>
         )}
@@ -205,71 +211,71 @@ const Users = () => {
 
       {/* 模态框 */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="glass rounded-xl p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-white mb-4">
               {editingUser ? '编辑用户' : '新建用户'}
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-dark-300 mb-1">
                   用户名
                 </label>
                 <input
                   type="text"
                   value={formData.username}
                   onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 bg-dark-700/50 border border-dark-600 rounded-lg text-white focus:ring-2 focus:ring-accent-blue outline-none"
                   required
                   disabled={!!editingUser}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-dark-300 mb-1">
                   邮箱
                 </label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 bg-dark-700/50 border border-dark-600 rounded-lg text-white focus:ring-2 focus:ring-accent-blue outline-none"
                   required
                 />
               </div>
               {!editingUser && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-dark-300 mb-1">
                     密码
                   </label>
                   <input
                     type="password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                    className="w-full px-3 py-2 bg-dark-700/50 border border-dark-600 rounded-lg text-white focus:ring-2 focus:ring-accent-blue outline-none"
                     required={!editingUser}
                     minLength={6}
                   />
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-dark-300 mb-1">
                   显示名称
                 </label>
                 <input
                   type="text"
                   value={formData.display_name}
                   onChange={(e) => setFormData({ ...formData, display_name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 bg-dark-700/50 border border-dark-600 rounded-lg text-white focus:ring-2 focus:ring-accent-blue outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-dark-300 mb-1">
                   角色
                 </label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'manager' | 'member' })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+                  className="w-full px-3 py-2 bg-dark-700/50 border border-dark-600 rounded-lg text-white focus:ring-2 focus:ring-accent-blue outline-none"
                 >
                   <option value="member">成员</option>
                   <option value="manager">经理</option>
@@ -280,13 +286,13 @@ const Users = () => {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                  className="px-4 py-2 text-dark-300 hover:bg-dark-700/50 rounded-lg transition-colors"
                 >
                   取消
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                  className="px-4 py-2 bg-gradient-to-r from-accent-cyan to-accent-blue text-white rounded-lg hover:opacity-90 transition-all"
                 >
                   保存
                 </button>

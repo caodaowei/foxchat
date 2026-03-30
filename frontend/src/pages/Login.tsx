@@ -41,43 +41,46 @@ const Login = ({ onLogin }: LoginProps) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-dark">
+      <div className="glass p-8 rounded-2xl w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary-600">🦊 FoxChat</h1>
-          <p className="text-gray-500 mt-2">团队沟通协作平台</p>
+          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-accent-cyan to-accent-blue flex items-center justify-center text-white font-bold text-2xl mb-4">
+            🦊
+          </div>
+          <h1 className="text-2xl font-bold text-white">FoxChat</h1>
+          <p className="text-dark-400 mt-2">团队沟通协作平台</p>
         </div>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+          <div className="mb-4 p-3 bg-red-500/20 text-red-400 rounded-lg text-sm border border-red-500/30">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-dark-300 mb-2">
               用户名
             </label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-dark-700/50 border border-dark-600 rounded-lg text-white placeholder-dark-500 focus:ring-2 focus:ring-accent-blue focus:border-transparent outline-none transition-all"
               placeholder="请输入用户名"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-dark-300 mb-2">
               密码
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-2.5 bg-dark-700/50 border border-dark-600 rounded-lg text-white placeholder-dark-500 focus:ring-2 focus:ring-accent-blue focus:border-transparent outline-none transition-all"
               placeholder="请输入密码"
               required
             />
@@ -86,13 +89,20 @@ const Login = ({ onLogin }: LoginProps) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 px-4 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            className="w-full py-2.5 px-4 bg-gradient-to-r from-accent-cyan to-accent-blue text-white rounded-lg hover:opacity-90 focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 focus:ring-offset-dark-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
           >
-            {loading ? '登录中...' : '登录'}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                登录中...
+              </span>
+            ) : (
+              '登录'
+            )}
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-6 text-center text-sm text-dark-500">
           <p>默认管理员账号: admin / admin123</p>
         </div>
       </div>
