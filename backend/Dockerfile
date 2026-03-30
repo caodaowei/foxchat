@@ -2,18 +2,18 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# 安装依赖
+# Install dependencies
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
-# 复制应用代码
-COPY src ./src
+# Copy source code
+COPY . .
 
-# 创建数据目录
-RUN mkdir -p data
+# Build TypeScript
+RUN npm run build
 
-# 暴露端口
-EXPOSE 3000
+# Expose port
+EXPOSE 3002
 
-# 启动应用
-CMD ["node", "src/app.js"]
+# Start application
+CMD ["npm", "start"]
