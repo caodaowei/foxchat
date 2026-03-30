@@ -16,18 +16,27 @@ jobs:
       uses: webfactory/ssh-agent@v0.8.0
       with:
         ssh-private-key: ${{ secrets.AITEST01_SSH_KEY }}
+        log-public-key: false
         
     - name: Add host to known hosts
       run: |
         mkdir -p ~/.ssh
-        ssh-keyscan -H ${{ secrets.AITEST01_HOST }} >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ secrets.AITEST01_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+        
+    - name: Test SSH Connection
+      run: |
+        echo "Testing SSH connection..."
+        ssh -o ConnectTimeout=10 -o StrictHostKeyChecking=no ${{ secrets.AITEST01_USER }}@${{ secrets.AITEST01_HOST }} "echo 'SSH OK'" || echo "SSH test failed"
         
     - name: Deploy to AITest01
       run: |
-        ssh ${{ secrets.AITEST01_USER }}@${{ secrets.AITEST01_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no ${{ secrets.AITEST01_USER }}@${{ secrets.AITEST01_HOST }} << 'EOF'
+          set -e
+          echo "Starting deployment..."
           cd /home/azureuser/src/foxchat
           git pull origin master
           sudo docker compose down
           sudo docker compose up -d --build
           sudo docker system prune -f
+          echo "Deployment completed!"
         EOF
